@@ -33,7 +33,12 @@ hs_err_pid*
 .gradle
 .m2
 
+build
 ./build
 ./gradle
 .idea
 /gradle
+
+gradlew
+gradlew.bat
+/build/
