@@ -42,3 +42,4 @@ build
 gradlew
 gradlew.bat
 /build/
+.env

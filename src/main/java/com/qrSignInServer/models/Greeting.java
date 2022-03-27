@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.models;
+package com.qrSignInServer.models;
 
 public class Greeting {
     private String content;

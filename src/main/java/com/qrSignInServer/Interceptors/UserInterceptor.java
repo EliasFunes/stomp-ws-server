@@ -1,9 +1,9 @@
-package com.example.messagingstompwebsocket.Interceptors;
+package com.qrSignInServer.Interceptors;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.example.messagingstompwebsocket.models.User;
+import com.qrSignInServer.models.User;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

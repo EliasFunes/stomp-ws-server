@@ -1,6 +1,6 @@
-package com.example.messagingstompwebsocket;
+package com.qrSignInServer.config.webSocket;
 
-import com.example.messagingstompwebsocket.Interceptors.UserInterceptor;
+import com.qrSignInServer.Interceptors.UserInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

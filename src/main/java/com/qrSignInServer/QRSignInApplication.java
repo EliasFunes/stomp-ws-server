@@ -1,11 +1,11 @@
-package com.example.messagingstompwebsocket;
+package com.qrSignInServer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MessagingStompWebsocketApplication {
+public class QRSignInApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MessagingStompWebsocketApplication.class, args);
+        SpringApplication.run(QRSignInApplication.class, args);
     }
 }

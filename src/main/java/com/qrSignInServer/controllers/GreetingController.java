@@ -1,7 +1,7 @@
-package com.example.messagingstompwebsocket.controllers;
+package com.qrSignInServer.controllers;
 
-import com.example.messagingstompwebsocket.models.Greeting;
-import com.example.messagingstompwebsocket.models.HelloMessage;
+import com.qrSignInServer.models.Greeting;
+import com.qrSignInServer.models.HelloMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
