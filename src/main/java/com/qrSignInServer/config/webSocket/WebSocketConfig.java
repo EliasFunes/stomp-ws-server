@@ -1,6 +1,6 @@
 package com.qrSignInServer.config.webSocket;
 
-import com.qrSignInServer.Interceptors.UserInterceptor;
+import com.qrSignInServer.Interceptors.UserQRInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new UserInterceptor());
+        registration.interceptors(new UserQRInterceptor());
     }
 
 }
