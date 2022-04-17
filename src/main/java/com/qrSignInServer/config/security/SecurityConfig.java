@@ -71,6 +71,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // Our public endpoints
             .antMatchers("/api/public/**").permitAll()
             .antMatchers("/jwt/**").permitAll()
+            .antMatchers("/").permitAll()
+            .antMatchers("/index.html").permitAll()
+            .antMatchers("/webjars/**").permitAll()
+            .antMatchers("/app.js").permitAll()
+            .antMatchers("/favicon.ico").permitAll()
+            .antMatchers("/main.css").permitAll()
+            .antMatchers("/gs-guide-websocket/**").permitAll()
                 /*.antMatchers(HttpMethod.GET, "/api/author/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()

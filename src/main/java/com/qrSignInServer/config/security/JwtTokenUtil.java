@@ -1,8 +1,11 @@
 package com.qrSignInServer.config.security;
 
+import com.qrSignInServer.Interceptors.UserQRInterceptor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,8 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
+    Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
+
     private static final long serialVersionUID = -2550185165626007488L;
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
@@ -24,6 +29,10 @@ public class JwtTokenUtil implements Serializable {
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
+
+        logger.info("getUsernameFromToken");
+        logger.info(token);
+
         return getClaimFromToken(token, Claims::getSubject);
     }
 

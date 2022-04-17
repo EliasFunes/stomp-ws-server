@@ -1,5 +1,7 @@
 let stompClient = null;
 
+
+//TODO: mientras
 function setConnected(connected) {
   $("#connect").prop("disabled", connected);
   $("#disconnect").prop("disabled", !connected);
@@ -13,9 +15,13 @@ function setConnected(connected) {
 }
 
 function connect() {
+  localStorage.setItem('Auth-Token', 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbGlhc2YiLCJleHAiOjE2NTAxNTgxNDEsImlhdCI6MTY1MDE0MDE0MX0.xYfTs5-SCBb6kDfirD7IWEa2suW2010ptQTeATsp2rFC0T6Td-YgFqpZmb9xJO-gHIwGGRguZMIBRJhnBvSeKQ')
+  let token = localStorage.getItem('Auth-Token') // eslint-disable-line
+
+
   let socket = new SockJS('/gs-guide-websocket');
   stompClient = Stomp.over(socket);
-  stompClient.connect({}, function (frame) {
+  stompClient.connect({'Auth-Token': token}, function (frame) {
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings', function (greeting) {
@@ -25,18 +31,21 @@ function connect() {
 }
 
 function connect_user(username) {
+  localStorage.setItem('Auth-Token', 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlbGlhc2YiLCJleHAiOjE2NTAyNDc2NzcsImlhdCI6MTY1MDIyOTY3N30._GThxDHp4MAwBqvOSmlaUYg2v3MuvhtMjW-SxRaiIMW91MeQS1mbaVY34kZhhAVQ-bWNAOV8aHa2pOWBeHbYpw')
+  let token = localStorage.getItem('Auth-Token') // eslint-disable-line
+
   console.log("entra en connect user");
   console.log("username:", username);
   if(username){
     let socket = new SockJS('/gs-guide-websocket');
     stompClient = Stomp.over(socket)
-    stompClient.connect({username: username}, (frame) => {
+    stompClient.connect({username: username, 'X-Authorization': token}, (frame) => {
       console.log('Connected: ' + frame);
       stompClient.subscribe("/user/topic/messages", (message) => {
         console.log("llego un mensaje", message);
         console.log("body", message.body);
         showGreeting(message.body);
-      })
+      }/*, {'X-Authorization': token}*/)
     })
   } else {
     throw new Error("Username no definido")
@@ -62,8 +71,9 @@ function showGreeting(message) {
 }
 
 function sendToUser(userName) {
+  let token = localStorage.getItem('Auth-Token')
   console.log(`se envia a ${userName}`)
-  stompClient.send("/app/hello_user", {}, userName)
+  stompClient.send("/app/hello_user", {/*'X-Authorization': token*/}, userName)
 }
 
 $(function () {
