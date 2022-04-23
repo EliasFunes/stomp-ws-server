@@ -1,6 +1,5 @@
 package com.qrSignInServer.config.security;
 
-import com.qrSignInServer.Interceptors.UserQRInterceptor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
