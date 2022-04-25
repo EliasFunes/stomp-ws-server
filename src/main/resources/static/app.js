@@ -19,7 +19,7 @@ function connect() {
   let token = localStorage.getItem('Auth-Token') // eslint-disable-line
 
 
-  let socket = new SockJS('/gs-guide-websocket');
+  let socket = new SockJS('http://localhost:8080/wsc');
   stompClient = Stomp.over(socket);
   stompClient.connect({'Auth-Token': token}, function (frame) {
     setConnected(true);
@@ -37,7 +37,7 @@ function connect_user(username) {
   console.log("entra en connect user");
   console.log("username:", username);
   if(username){
-    let socket = new SockJS('/gs-guide-websocket');
+    let socket = new SockJS('http://localhost:8080/wsc');
     stompClient = Stomp.over(socket)
     stompClient.connect({username: username, 'X-Authorization': token}, (frame) => {
       console.log('Connected: ' + frame);

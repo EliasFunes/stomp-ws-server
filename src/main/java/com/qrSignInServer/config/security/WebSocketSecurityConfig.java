@@ -11,7 +11,7 @@
 //    @Override
 //    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
 //        messages
-//                .simpDestMatchers("/gs-guide-websocket/**").authenticated();
+//                .simpDestMatchers("/wsc/**").authenticated();
 //    }
 //
 //
