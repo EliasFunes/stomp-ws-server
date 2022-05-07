@@ -38,19 +38,36 @@ public class UserQRInterceptor implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             logger.info("entered into preSend implementation CONNECT");
             String token = Objects.requireNonNull(accessor.getFirstNativeHeader("X-Authorization")).split(" ")[1];
+            Object qrIdObj = accessor.getNativeHeader("qrId");
             final String username = jwtTokenUtil.getUsernameFromToken(token);
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+
+            String qrId = null;
+            if(qrIdObj != null) {
+                qrId = accessor.getNativeHeader("qrId").get(0);
+            }
 
             if(!jwtTokenUtil.validateToken(token, userDetails)) {
                 throw new BadCredentialsException("Bad credentials for user " + username);
             }
 
-            UsernamePasswordAuthenticationToken user =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails.getUsername(),
-                            null,
-                            userDetails.getAuthorities()
-                    );
+
+            UsernamePasswordAuthenticationToken user = null;
+
+            if(qrId != null) {
+                user = new UsernamePasswordAuthenticationToken(
+                                qrId,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+            } else {
+                 user = new UsernamePasswordAuthenticationToken(
+                                userDetails.getUsername(),
+                                null,
+                                userDetails.getAuthorities()
+                        );
+            }
+
 
             accessor.setUser(user);
         }
