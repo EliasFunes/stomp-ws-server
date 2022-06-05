@@ -1,6 +1,6 @@
 package com.qrSignInServer.config.webSocket;
 
-import com.qrSignInServer.Interceptors.UserQRInterceptor;
+import com.qrSignInServer.Interceptors.UserInterceptor;
 import com.qrSignInServer.config.security.JwtTokenUtil;
 import com.qrSignInServer.services.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new UserQRInterceptor(jwtTokenUtil, jwtUserDetailsService));
+        registration.interceptors(new UserInterceptor(jwtTokenUtil, jwtUserDetailsService));
     }
 
 }

@@ -18,17 +18,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Objects;
 
 @Configurable
-public class UserQRInterceptor implements ChannelInterceptor {
+public class UserInterceptor implements ChannelInterceptor {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
 
-    public UserQRInterceptor(JwtTokenUtil jwtTokenUtil, JwtUserDetailsService jwtUserDetailsService) {
+    public UserInterceptor(JwtTokenUtil jwtTokenUtil, JwtUserDetailsService jwtUserDetailsService) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtUserDetailsService = jwtUserDetailsService;
     }
 
-    Logger logger = LoggerFactory.getLogger(UserQRInterceptor.class);
+    Logger logger = LoggerFactory.getLogger(UserInterceptor.class);
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) throws AuthenticationException {

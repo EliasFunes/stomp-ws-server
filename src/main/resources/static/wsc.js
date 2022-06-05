@@ -40,7 +40,8 @@ function connect_user() {
             // una vez retorna ejecutar el callback o enpoint que tiene que proveer el tenant para loggear su usuario
             // y como unico parametro el identificador de su usuario
 
-
+            //TODO: esta funcion pueda esperar una funcion callback que es la funcion que utiliza cada cliente
+            // para logear a su usuario.
 
             console.log("body", message.body);
             showGreeting(message.body);

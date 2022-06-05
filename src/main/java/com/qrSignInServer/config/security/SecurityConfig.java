@@ -3,7 +3,6 @@ package com.qrSignInServer.config.security;
 import com.qrSignInServer.services.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Todo configure autentication manager
         auth.userDetailsService(jwtUserDetailsService);
     }
 
@@ -42,8 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // TODO configure web security
-
         // Enable CORS and disable CSRF
         http = http.cors().and().csrf().disable();
 
@@ -81,10 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/favicon.ico").permitAll()
             .antMatchers("/main.css").permitAll()
             .antMatchers("/wsc/**").permitAll()
-                /*.antMatchers(HttpMethod.GET, "/api/author/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/author/search").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/book/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/book/search").permitAll()*/
             // Our private endpoints
             .anyRequest().authenticated();
 

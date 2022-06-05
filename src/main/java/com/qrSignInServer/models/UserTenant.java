@@ -12,7 +12,7 @@ public class UserTenant {
     private Long id;
 
     @Column(name = "references_key_tenant")
-    private String referencesKeyTenant;
+    private String referencesKeyTenant; //el id que maneja el tenant de su usario
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tenants", referencedColumnName = "id")
