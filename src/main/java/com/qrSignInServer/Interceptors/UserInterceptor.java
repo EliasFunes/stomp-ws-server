@@ -36,7 +36,7 @@ public class UserInterceptor implements ChannelInterceptor {
 
         assert accessor != null;
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-            logger.info("entered into preSend implementation CONNECT");
+//            logger.info("entered into preSend implementation CONNECT");
             String token = Objects.requireNonNull(accessor.getFirstNativeHeader("X-Authorization")).split(" ")[1];
             Object qrIdObj = accessor.getNativeHeader("qrId");
             final String username = jwtTokenUtil.getUsernameFromToken(token);
@@ -44,7 +44,8 @@ public class UserInterceptor implements ChannelInterceptor {
 
             String qrId = null;
             if(qrIdObj != null) {
-                qrId = accessor.getNativeHeader("qrId").get(0);
+                String tokenQR = accessor.getNativeHeader("qrId").get(0);
+                qrId = jwtTokenUtil.getQRIDFromToken(tokenQR);
             }
 
             if(!jwtTokenUtil.validateToken(token, userDetails)) {

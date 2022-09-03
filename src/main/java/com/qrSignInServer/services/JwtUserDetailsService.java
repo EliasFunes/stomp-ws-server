@@ -21,8 +21,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        logger.info("loadUserByUsername ");
-        logger.info("username: " + username);
+//        logger.info("loadUserByUsername ");
+//        logger.info("username: " + username);
         return /*(UserDetails) no es necesario castear si el model extiende de esta clase*/
                 userRepository
                 .findByUsername(username)

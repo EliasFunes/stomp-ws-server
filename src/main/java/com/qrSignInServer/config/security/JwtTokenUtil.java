@@ -29,8 +29,8 @@ public class JwtTokenUtil implements Serializable {
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
 
-        logger.info("getUsernameFromToken");
-        logger.info(token);
+//        logger.info("getUsernameFromToken");
+//        logger.info(token);
 
         return getClaimFromToken(token, Claims::getSubject);
     }
@@ -60,6 +60,17 @@ public class JwtTokenUtil implements Serializable {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return doGenerateToken(claims, userDetails.getUsername());
+    }
+
+    public String generateQRIDToken(String qrId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("qrId", qrId);
+        return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
+    public String getQRIDFromToken(String tokenQR) {
+        final Claims claims = getAllClaimsFromToken(tokenQR);
+        return claims.get("qrId").toString();
     }
 
     //while creating the token -
