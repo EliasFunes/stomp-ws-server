@@ -1,5 +1,6 @@
 package com.qrSignInServer.config.security;
 
+import com.qrSignInServer.models.User;
 import com.qrSignInServer.services.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.ValidationException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +42,12 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public Long getUserIdFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        Long id = Long.parseLong(claims.get("id").toString());
+        return id;
+    }
+
     //retrieve expiration date from jwt token
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
@@ -62,9 +70,10 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        claims.put("id", user.getId());
+        return doGenerateToken(claims, user.getUsername());
     }
 
     public String generateQRIDToken(String qrId) {
@@ -109,5 +118,14 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+    public Boolean validateTokenUser(String token, User user) throws ValidationException {
+        if(user.getTipo().equals("tenant")){
+            jwtService.create(token);
+        }
+        final String username = getUsernameFromToken(token);
+        return (username.equals(user.getUsername()) && !isTokenExpired(token));
+    }
+
+
 
 }

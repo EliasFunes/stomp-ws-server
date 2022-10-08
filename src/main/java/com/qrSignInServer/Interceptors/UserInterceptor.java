@@ -1,6 +1,7 @@
 package com.qrSignInServer.Interceptors;
 
 import com.qrSignInServer.config.security.JwtTokenUtil;
+import com.qrSignInServer.models.User;
 import com.qrSignInServer.services.JwtUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,8 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.xml.bind.ValidationException;
 import java.util.Objects;
 
 @Configurable
@@ -36,11 +38,12 @@ public class UserInterceptor implements ChannelInterceptor {
 
         assert accessor != null;
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//            logger.info("entered into preSend implementation CONNECT");
+            logger.info("entered into preSend implementation CONNECT");
             String token = Objects.requireNonNull(accessor.getFirstNativeHeader("X-Authorization")).split(" ")[1];
             Object qrIdObj = accessor.getNativeHeader("qrId");
-            final String username = jwtTokenUtil.getUsernameFromToken(token);
-            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+
+            final Long userId = jwtTokenUtil.getUserIdFromToken(token);
+            User user = jwtUserDetailsService.loadByUserId(userId);
 
             String qrId = null;
             if(qrIdObj != null) {
@@ -48,29 +51,30 @@ public class UserInterceptor implements ChannelInterceptor {
                 qrId = jwtTokenUtil.getQRIDFromToken(tokenQR);
             }
 
-            if(!jwtTokenUtil.validateToken(token, userDetails)) {
-                throw new BadCredentialsException("Bad credentials for user " + username);
+            try {
+                if(!jwtTokenUtil.validateTokenUser(token, user)) {
+                    throw new BadCredentialsException("Bad credentials for user " + user.getUsername());
+                }
+            } catch (ValidationException e) {
+                throw new RuntimeException(e);
             }
 
-
-            UsernamePasswordAuthenticationToken user = null;
+            UsernamePasswordAuthenticationToken userPAT = null;
 
             if(qrId != null) {
-                user = new UsernamePasswordAuthenticationToken(
+                userPAT = new UsernamePasswordAuthenticationToken(
                                 qrId,
                                 null,
-                                userDetails.getAuthorities()
+                                user.getAuthorities()
                         );
             } else {
-                 user = new UsernamePasswordAuthenticationToken(
-                                userDetails.getUsername(),
+                userPAT = new UsernamePasswordAuthenticationToken(
+                                user.getUsername(),
                                 null,
-                                userDetails.getAuthorities()
+                                user.getAuthorities()
                         );
             }
-
-
-            accessor.setUser(user);
+            accessor.setUser(userPAT);
         }
         return message;
     }

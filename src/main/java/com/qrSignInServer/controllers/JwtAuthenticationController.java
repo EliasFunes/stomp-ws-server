@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
@@ -37,14 +36,19 @@ public class JwtAuthenticationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(value = "/user/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody @Valid JwtRequest authRequest) throws Exception {
+    @PostMapping(value = "/user_tenant/authenticate")
+    public ResponseEntity<?> createAuthenticationTokenTenant(@RequestBody @Valid JwtRequest authRequest) throws Exception {
         authenticate(authRequest.getUsername(), authRequest.getPassword());
+        final User user = userDetailsService.loadUserByUsernameAndTipo(authRequest.getUsername(), "tenant");
+        final String token = jwtTokenUtil.generateToken(user);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
-
+    @PostMapping(value = "/user_lessor/authenticate")
+    public ResponseEntity<?> createAuthenticationTokenLessor(@RequestBody @Valid JwtRequest authRequest) throws Exception {
+        authenticate(authRequest.getUsername(), authRequest.getPassword());
+        final User user = userDetailsService.loadUserByUsernameAndTipo(authRequest.getUsername(), "lessor");
+        final String token = jwtTokenUtil.generateToken(user);
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
@@ -59,7 +63,12 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/user/register")
-    public Optional<User> userRegister(@RequestBody @Valid CreateUserRequest request) throws ValidationException {
-        return userService.create(request);
+    public Optional<User> userLessorRegister(@RequestBody @Valid CreateUserRequest request) throws ValidationException {
+        return userService.create(request, "lessor");
+    }
+
+    @PostMapping("/user_tenant/register")
+    public Optional<User> userTenantRegister(@RequestBody @Valid CreateUserRequest request) throws ValidationException {
+        return userService.create(request, "tenant");
     }
 }

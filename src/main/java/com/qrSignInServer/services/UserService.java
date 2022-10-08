@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public Optional<User> create(CreateUserRequest request) throws ValidationException {
+    public Optional<User> create(CreateUserRequest request, String tipo) throws ValidationException {
         if(userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new ValidationException("Username already exists!");
         }
@@ -31,6 +31,7 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setTipo(tipo);
 
         Long id = userRepository.save(user).getId();
         return userRepository.findById(id);

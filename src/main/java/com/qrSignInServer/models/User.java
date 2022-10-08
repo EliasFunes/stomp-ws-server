@@ -14,9 +14,6 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-
-    //TODO: falta agregar que tipo de cliente es, si es tenant o lessor para determinar si usar solo
-    // una vez el token, para obtener el codigo qr
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -42,6 +39,8 @@ public class User implements UserDetails {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Column(name = "tipo", columnDefinition = "default 'lessor'")
+    private String tipo;
 
     public User() {
     }
@@ -127,5 +126,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

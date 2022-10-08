@@ -68,12 +68,12 @@
     form.addEventListener("submit", function(evt) {
       evt.preventDefault()
       postData(
-        'http://localhost:8080/jwt/user/authenticate',
+        'http://localhost:8080/jwt/user_tenant/authenticate',
         { username: username.value, password: password.value })
         .then(data => {
           console.log(data) // JSON data parsed by `data.json()` call
           localStorage.setItem('Auth-Token', `Bearer ${data.token}`)
-          window.location.replace('http://localhost:8080/wsc.html');
+          window.location.replace('http://localhost:8080/tenant_wsc.html');
         })
         .catch(e => {
           console.log("error")

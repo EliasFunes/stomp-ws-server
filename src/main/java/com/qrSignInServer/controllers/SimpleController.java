@@ -104,9 +104,8 @@ public class SimpleController {
     }
 
     @PostMapping(value = "/sendToUser")
-    public void userRegister(@RequestHeader HttpHeaders headers, @RequestBody @Valid HashMap<String, String> data) throws ExecutionException, InterruptedException {
- //TODO: ver si se puede refactorizar algo en un utils.
-
+    public void sendToUser(@RequestHeader HttpHeaders headers, @RequestBody @Valid HashMap<String, String> data) {
+        //TODO: ver si se puede refactorizar algo en un utils.
         String tokenQR = data.get("tokenQr");
         String qrId = jwtTokenUtil.getQRIDFromToken(tokenQR);
         String token = headers.getFirst(HttpHeaders.AUTHORIZATION);
