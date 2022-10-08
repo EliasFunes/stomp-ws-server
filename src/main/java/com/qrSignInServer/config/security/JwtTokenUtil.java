@@ -1,14 +1,18 @@
 package com.qrSignInServer.config.security;
 
+import com.qrSignInServer.models.User;
+import com.qrSignInServer.services.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.ValidationException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,13 +30,22 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.secret}")
     private String secret;
 
+    @Autowired
+    JWTService jwtService;
+
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
 
-        logger.info("getUsernameFromToken");
-        logger.info(token);
+//        logger.info("getUsernameFromToken");
+//        logger.info(token);
 
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public Long getUserIdFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        Long id = Long.parseLong(claims.get("id").toString());
+        return id;
     }
 
     //retrieve expiration date from jwt token
@@ -57,9 +70,21 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
+        claims.put("id", user.getId());
+        return doGenerateToken(claims, user.getUsername());
+    }
+
+    public String generateQRIDToken(String qrId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("qrId", qrId);
+        return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
+    public String getQRIDFromToken(String tokenQR) {
+        final Claims claims = getAllClaimsFromToken(tokenQR);
+        return claims.get("qrId").toString();
     }
 
     //while creating the token -
@@ -79,8 +104,28 @@ public class JwtTokenUtil implements Serializable {
 
     //validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
+        //TODO: determinar si es un usuario tipo tenant
+        // Si es tenant, verificar que el token no haya sido utilizado ya para obtener un QRID
+        // para eso utilizar jwtService.jwtIsPresent(token);
+        // si no existe guardar el token con jwtService.create(token);
+
+        // OBS: Se puede implementar la validacion de lista negra de token aqui ya que el tenant,
+        // tiene que enviar sus credenciales cada vez que desea un QRID desde su server a su cliente
+        // debe hacer eso.
+        // Puede loggearse para ofrecer los servicios de formulario para validar la primera vez a su user.
+        // En ese caso tambien solo necesita loggearse una vez. Por lo que aplica la regla de un token a la vez.
+
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+    public Boolean validateTokenUser(String token, User user) throws ValidationException {
+        if(user.getTipo().equals("tenant")){
+            jwtService.create(token);
+        }
+        final String username = getUsernameFromToken(token);
+        return (username.equals(user.getUsername()) && !isTokenExpired(token));
+    }
+
+
 
 }

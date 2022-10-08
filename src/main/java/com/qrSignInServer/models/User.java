@@ -39,6 +39,8 @@ public class User implements UserDetails {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Column(name = "tipo", columnDefinition = "default 'lessor'")
+    private String tipo;
 
     public User() {
     }
@@ -124,5 +126,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

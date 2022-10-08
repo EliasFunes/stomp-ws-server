@@ -8,7 +8,7 @@
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/wsc.js"></script>
+    <script src="/lessor_wsc.js"></script>
 </head>
 <body>
     <noscript>
@@ -16,24 +16,6 @@
             enabled. Please enable
             Javascript and reload this page!</h2></noscript>
     <div id="main-content" class="container">
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="..." id="qr-img-id">
-                    <div class="card-body">
-                        <h5 class="card-title">Código QR</h5>
-                        <p class="card-text">Escanear código QR para acceder.</p>
-                        <div class="d-grid gap-2">
-                            <a href="#" class="btn btn-success" id="scan-qr-button">Obtener QR ID</a>
-                            <span id="id-qr"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
 
         <div class="row">
             <div class="col-md-6">
@@ -54,19 +36,6 @@
                     </div>
                     <button id="send_user" class="btn btn-default" type="submit">Send User</button>
                 </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table id="conversation" class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Greetings</th>
-                    </tr>
-                    </thead>
-                    <tbody id="greetings">
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>

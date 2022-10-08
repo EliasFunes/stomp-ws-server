@@ -63,8 +63,18 @@ function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
-function sendToUser(userName) {
-    stompClient.send("/app/hello_user", {/*'X-Authorization': token*/}, userName)
+function sendToUser(tokenQr) {
+    // stompClient.send("/app/hello_user", {/*'X-Authorization': token*/}, userName)
+    postData(
+        'http://localhost:8080/test/sendToUser',
+        { "tokenQr": tokenQr })
+        .then(data => {
+            console.log(data)
+        })
+        .catch(e => {
+            console.log("error")
+            console.log(e)
+        })
 }
 
 async function getQR() {
@@ -113,4 +123,22 @@ $(function () {
     })
     $(document).ready(() => getQR())
 });
+
+async function postData(url = '', data = {}) {
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Auth-Token'),
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+
+    });
+    return response.json();
+}
 
