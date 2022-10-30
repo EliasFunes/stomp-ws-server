@@ -26,15 +26,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+//        config.enableSimpleBroker("/topic");
+        /**
+         * Prefijo que se utiliza para invocar a los controladores de la aplicacion desde el protocolo websocket.
+         */
         config.setApplicationDestinationPrefixes("/app");
+        /**
+         * Prefijo que se utiliza para enviar los mensajes a los usuarios especificos.
+         */
         config.setUserDestinationPrefix("/user");
     }
 
+    /**
+     * Endpoint que se utiliza para conectarse al stomp websocket.
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/wsc").withSockJS();
-//        registry.addEndpoint("/wsc_tenant").withSockJS();
     }
 
     @Override

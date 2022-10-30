@@ -66,7 +66,7 @@ function showGreeting(message) {
 function sendToUser(tokenQr) {
     // stompClient.send("/app/hello_user", {/*'X-Authorization': token*/}, userName)
     postData(
-        'http://localhost:8080/test/sendToUser',
+        'http://localhost:8080/ws/sendToUser',
         { "tokenQr": tokenQr })
         .then(data => {
             console.log(data)
@@ -79,7 +79,7 @@ function sendToUser(tokenQr) {
 
 async function getQR() {
     let token = localStorage.getItem('Auth-Token')
-    const response = await fetch('http://localhost:8080/test/genQR', {headers: {Authorization: token}})
+    const response = await fetch('http://localhost:8080/qr/genQR', {headers: {Authorization: token}})
     const blob = await response.blob()
 
     globalBlob = blob
@@ -93,7 +93,7 @@ async function uploadQR() {
     const file = new File([globalBlob], "qr.png", {type: globalBlob.type});
     const formData = new FormData()
     formData.append('qrCodeFile', file)
-    const response = await fetch('http://localhost:8080/test/scanQR',
+    const response = await fetch('http://localhost:8080/qr/scanQR',
     {
             method: "POST",
             headers: {

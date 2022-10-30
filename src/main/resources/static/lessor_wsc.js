@@ -64,9 +64,8 @@ function showGreeting(message) {
 }
 
 function sendToUser(tokenQr) {
-    // stompClient.send("/app/hello_user", {/*'X-Authorization': token*/}, userName)
     postData(
-        'http://localhost:8080/test/sendToUser',
+        'http://localhost:8080/ws/sendToUser',
         { "tokenQr": tokenQr })
         .then(data => {
             console.log(data)
@@ -77,39 +76,6 @@ function sendToUser(tokenQr) {
         })
 }
 
-async function getQR() {
-    let token = localStorage.getItem('Auth-Token')
-    const response = await fetch('http://localhost:8080/test/genQR', {headers: {Authorization: token}})
-    const blob = await response.blob()
-
-    globalBlob = blob
-    const url = URL.createObjectURL(globalBlob/*.slice(0, 4000)*/)
-
-    $("#qr-img-id").attr("src",url);
-}
-
-async function uploadQR() {
-    let token = localStorage.getItem('Auth-Token')
-    const file = new File([globalBlob], "qr.png", {type: globalBlob.type});
-    const formData = new FormData()
-    formData.append('qrCodeFile', file)
-    const response = await fetch('http://localhost:8080/test/scanQR',
-    {
-            method: "POST",
-            headers: {
-                Authorization: token
-            },
-            body: formData
-         }
-    ).then((res) => {
-        return res.text()
-    }).catch(e => {
-        console.log("error")
-        console.log(e)
-    })
-    return response
-}
-
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
@@ -117,11 +83,6 @@ $(function () {
     $( "#connect_user" ).click(function() { connect_user() });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send_user" ).click(function() { sendToUser($("#name").val()) });
-    $("#scan-qr-button").click(async () => {
-        const idQR = await uploadQR()
-        $("#id-qr").text(idQR)
-    })
-    $(document).ready(() => getQR())
 });
 
 async function postData(url = '', data = {}) {
