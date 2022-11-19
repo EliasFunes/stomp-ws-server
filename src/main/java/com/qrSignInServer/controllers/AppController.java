@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class AppController {
 
-    //ESTE SE UTILIZA PARA ENVIAR A TODOS LOS QUE ESTAN SUSCRIBIDOS
+    //ESTE SE UTILIZA PARA ENVIAR A TODOS LOS QUE ESTAN SUBSCRIPTOS
     /*@MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public Greeting greeting(HelloMessage message) throws Exception {
