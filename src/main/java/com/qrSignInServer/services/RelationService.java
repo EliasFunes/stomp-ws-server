@@ -1,6 +1,5 @@
 package com.qrSignInServer.services;
 
-import com.qrSignInServer.dto.RelationRequest;
 import com.qrSignInServer.models.Relation;
 import com.qrSignInServer.models.User;
 import com.qrSignInServer.repositories.RelationRepository;
@@ -20,7 +19,7 @@ public class RelationService {
     @Autowired
     UserRepository userRepository;
 
-    public Optional<Relation> create(RelationRequest request) throws ValidationException {
+    public Optional<Relation> create(Relation request) throws ValidationException {
 
         User lessor =  userRepository.getById(request.getLessor());
         User tenant =  userRepository.getById(request.getTenant());

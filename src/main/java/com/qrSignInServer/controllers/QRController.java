@@ -8,8 +8,11 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.qrSignInServer.config.security.JwtTokenUtil;
+import com.qrSignInServer.models.TenantQR;
+import com.qrSignInServer.repositories.TenantQRRepository;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +33,24 @@ public class QRController {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    TenantQRRepository tenantQRRepository;
+
     @GetMapping(value = "/genQR")
-    public void genQR(HttpServletResponse response) {
+    public void genQR(@RequestHeader HttpHeaders headers, HttpServletResponse response) {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        String token = bearerToken.split(" ")[1];
+        final Long tenantID = jwtTokenUtil.getUserIdFromToken(token);
+
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
 
-//        String contents = "https://simplesolution.dev";
         String QRID = "IDQR_" + UUID.randomUUID().toString();
+
+        TenantQR tenantQR = new TenantQR();
+        tenantQR.setTenant(tenantID);
+        tenantQR.setQrId(QRID);
+        tenantQRRepository.save(tenantQR);
+
         String contents = jwtTokenUtil.generateQRIDToken(QRID);
         int width = 100;
         int height = 100;

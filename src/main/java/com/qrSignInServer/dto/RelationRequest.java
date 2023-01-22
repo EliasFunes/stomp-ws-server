@@ -6,27 +6,18 @@ import java.io.Serializable;
 
 public class RelationRequest implements Serializable {
 
-    private @NotNull @NotBlank Long lessor;
-    private @NotNull @NotBlank Long tenant;
+    private @NotNull @NotBlank String lessorToken;
     private @NotNull @NotBlank String reference;
 
     public RelationRequest() {
     }
 
-    public Long getLessor() {
-        return lessor;
+    public String getLessorToken() {
+        return lessorToken;
     }
 
-    public void setLessor(Long lessor) {
-        this.lessor = lessor;
-    }
-
-    public Long getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Long tenant) {
-        this.tenant = tenant;
+    public void setLessorToken(String lessorToken) {
+        this.lessorToken = lessorToken;
     }
 
     public String getReference() {

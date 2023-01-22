@@ -1,6 +1,13 @@
 package com.qrSignInServer.controllers;
 
 import com.qrSignInServer.config.security.JwtTokenUtil;
+import com.qrSignInServer.models.Relation;
+import com.qrSignInServer.models.TenantQR;
+import com.qrSignInServer.models.WSPayload;
+import com.qrSignInServer.repositories.RelationRepository;
+import com.qrSignInServer.repositories.TenantQRRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -21,9 +28,11 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.validation.Valid;
+import javax.xml.bind.ValidationException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/ws")
@@ -32,12 +41,42 @@ public class WSController {
     @Autowired
     JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    TenantQRRepository tenantQRRepository;
+
+    @Autowired
+    RelationRepository relationRepository;
+
+    Logger logger = LoggerFactory.getLogger(WSController.class);
+
     @PostMapping(value = "/sendToUser")
-    public void sendToUser(@RequestHeader HttpHeaders headers, @RequestBody @Valid HashMap<String, String> data) {
+    public void sendToUser(@RequestHeader HttpHeaders headers, @RequestBody @Valid HashMap<String, String> data) throws ValidationException {
         //TODO: ver si se puede refactorizar algo en un utils.
+
+        logger.info("sendToUser");
+
         String tokenQR = data.get("tokenQr");
         String qrId = jwtTokenUtil.getQRIDFromToken(tokenQR);
-        String token = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        String token = bearerToken.split(" ")[1];
+        Long lessorId = jwtTokenUtil.getUserIdFromToken(token);
+
+
+        Optional<TenantQR> tenantQR = tenantQRRepository.findByQrID(qrId);
+
+        if(tenantQR.isEmpty()) {
+            throw new ValidationException("Relation tenantQR is not present!");
+        }
+
+        Long tenantID = tenantQR.get().getTenant();
+
+        Optional<Relation> relation = relationRepository.findByTenantAndLessor(tenantID, lessorId);
+        if(relation.isEmpty()){
+            throw new ValidationException("Relation tenant and lessor is not present!");
+        }
+
+        String userReference = relation.get().getReference();
+
 
         List<Transport> transports =
                 Collections.<Transport>singletonList(new WebSocketTransport(new StandardWebSocketClient()));
@@ -47,8 +86,8 @@ public class WSController {
                 new StompSessionHandlerAdapter() {
                     @Override
                     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-//                        logger.info("Connected to {}", session);
-                        session.send("/app/hello_user", qrId);
+                        WSPayload wsPayload = new WSPayload(qrId, userReference);
+                        session.send("/app/hello_user", wsPayload);
                         session.disconnect();
                     }
                     @Override
@@ -63,7 +102,7 @@ public class WSController {
                 };
         WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
         StompHeaders connectHeaders = new StompHeaders();
-        connectHeaders.add("X-Authorization", token);
+        connectHeaders.add("X-Authorization", bearerToken);
         connectHeaders.add("username", "username");
         stompClient.connect("ws://127.0.0.1:8080/wsc", handshakeHeaders, connectHeaders, handler, new Object[0]);
 //        logger.info("hello done");
