@@ -39,10 +39,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Endpoint que se utiliza para conectarse al stomp websocket.
+     * -- El filtro cors se maneja a parte de la configuracion global del proyecto.
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/wsc").withSockJS();
+        registry.addEndpoint("/wsc").setAllowedOriginPatterns("*").withSockJS();
     }
 
     @Override
