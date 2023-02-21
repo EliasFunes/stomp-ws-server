@@ -13,13 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-//import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
 import javax.servlet.http.HttpServletResponse;
-//import java.util.Arrays;
-//import java.util.Collections;
+
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -68,20 +65,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
             // Our public endpoints
-//            .antMatchers("/api/public/**").permitAll()
             .antMatchers("/jwt/**").permitAll()
-//            .antMatchers("/").permitAll()
-//            .antMatchers("/index.html").permitAll()
             .antMatchers("/lessor_login.html").permitAll()
             .antMatchers("/tenant_login.html").permitAll()
             .antMatchers("/lessor_wsc.html").permitAll()
             .antMatchers("/tenant_wsc.html").permitAll()
             .antMatchers("/webjars/**").permitAll()
-//            .antMatchers("/app.js").permitAll()
             .antMatchers("/lessor_wsc.js").permitAll()
             .antMatchers("/tenant_wsc.js").permitAll()
-//            .antMatchers("/favicon.ico").permitAll()
-//            .antMatchers("/main.css").permitAll()
             .antMatchers("/wsc/**").permitAll()
             // Our private endpoints
             .anyRequest().authenticated();
@@ -94,34 +85,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    // Used by spring security if CORS is enabled.
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
     @Override @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    /*@Bean
-    CorsConfigurationSource corsConfigurationSource()
-    {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList(CorsConfiguration.ALL));
-        configuration.setAllowedMethods(Arrays.asList("POST"));
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedMethod("*");
+        configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }*/
+    }
 
 }

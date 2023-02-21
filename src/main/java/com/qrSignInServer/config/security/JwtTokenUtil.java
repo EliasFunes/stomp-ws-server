@@ -114,7 +114,6 @@ public class JwtTokenUtil implements Serializable {
         // debe hacer eso.
         // Puede loggearse para ofrecer los servicios de formulario para validar la primera vez a su user.
         // En ese caso tambien solo necesita loggearse una vez. Por lo que aplica la regla de un token a la vez.
-
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

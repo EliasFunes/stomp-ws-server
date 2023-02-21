@@ -41,7 +41,8 @@ public class JwtAuthenticationController {
         authenticate(authRequest.getUsername(), authRequest.getPassword());
         final User user = userDetailsService.loadUserByUsernameAndTipo(authRequest.getUsername(), "tenant");
         final String token = jwtTokenUtil.generateToken(user);
-        return ResponseEntity.ok(new JwtResponse(token));
+        JwtResponse jwtResponse = new JwtResponse(token);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     @PostMapping(value = "/user_lessor/authenticate")
@@ -49,7 +50,8 @@ public class JwtAuthenticationController {
         authenticate(authRequest.getUsername(), authRequest.getPassword());
         final User user = userDetailsService.loadUserByUsernameAndTipo(authRequest.getUsername(), "lessor");
         final String token = jwtTokenUtil.generateToken(user);
-        return ResponseEntity.ok(new JwtResponse(token));
+        JwtResponse jwtResponse = new JwtResponse(token);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     private void authenticate(String username, String password) throws Exception {
