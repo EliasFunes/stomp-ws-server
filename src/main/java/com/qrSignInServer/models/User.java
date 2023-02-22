@@ -1,13 +1,11 @@
 package com.qrSignInServer.models;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -39,7 +37,7 @@ public class User implements UserDetails {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @Column(name = "tipo", columnDefinition = "default 'lessor'")
+    @Column(name = "tipo", columnDefinition = "text default 'lessor'")
     private String tipo;
 
     public User() {
