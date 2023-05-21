@@ -29,10 +29,11 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 
 @Controller
 @RequestMapping(value = "/ws")
@@ -48,6 +49,23 @@ public class WSController {
     RelationRepository relationRepository;
 
     Logger logger = LoggerFactory.getLogger(WSController.class);
+
+    //TODO: refactorizar en un util. Tambien poner un try
+    private String generateToken(String userReference) {
+        //TODO: el secret key habria que obtener del user tenant previamente configurado, de la DB
+        String secretKey = "yourSecretKey";
+//        String server2Audience = "server2";
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userReference", userReference);
+
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        return token;
+    }
 
     @PostMapping(value = "/sendToUser")
     public void sendToUser(@RequestHeader HttpHeaders headers, @RequestBody @Valid HashMap<String, String> data) throws ValidationException {
@@ -86,7 +104,7 @@ public class WSController {
                 new StompSessionHandlerAdapter() {
                     @Override
                     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                        WSPayload wsPayload = new WSPayload(qrId, userReference);
+                        WSPayload wsPayload = new WSPayload(qrId, generateToken(userReference));
                         session.send("/app/hello_user", wsPayload);
                         session.disconnect();
                     }
