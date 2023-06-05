@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -64,13 +65,22 @@ public class JwtAuthenticationController {
         }
     }
 
+    //lessor: es el propietario que ofrece - en nuestro, nuestros usuarios
     @PostMapping("/user/register")
     public Optional<User> userLessorRegister(@RequestBody @Valid CreateUserRequest request) throws ValidationException {
         return userService.create(request, "lessor");
     }
 
+    //tenant: es el que alquila - en nuestro caso el que utiliza nuestros servicios.
     @PostMapping("/user_tenant/register")
     public Optional<User> userTenantRegister(@RequestBody @Valid CreateUserRequest request) throws ValidationException {
         return userService.create(request, "tenant");
     }
+
+    @PostMapping(value = "/getReference")
+    public String getReference(@RequestBody @Valid HashMap<String, String> data) throws ValidationException {
+        String tokenQR = data.get("tokenReference");
+        return jwtTokenUtil.getReferenceFromToken(tokenQR);
+    }
+
 }

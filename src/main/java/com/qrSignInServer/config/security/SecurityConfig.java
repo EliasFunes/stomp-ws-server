@@ -66,13 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             // Our public endpoints
             .antMatchers("/jwt/**").permitAll()
-            .antMatchers("/lessor_login.html").permitAll()
-            .antMatchers("/tenant_login.html").permitAll()
-            .antMatchers("/lessor_wsc.html").permitAll()
-            .antMatchers("/tenant_wsc.html").permitAll()
-            .antMatchers("/webjars/**").permitAll()
-            .antMatchers("/lessor_wsc.js").permitAll()
-            .antMatchers("/tenant_wsc.js").permitAll()
             .antMatchers("/wsc/**").permitAll()
             // Our private endpoints
             .anyRequest().authenticated();

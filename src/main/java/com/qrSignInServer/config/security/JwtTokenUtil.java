@@ -82,6 +82,12 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
+    public String generateReferenceToken(String userReference) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userReference", userReference);
+        return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
     public String getQRIDFromToken(String tokenQR) {
         final Claims claims = getAllClaimsFromToken(tokenQR);
         return claims.get("qrId").toString();
@@ -125,6 +131,17 @@ public class JwtTokenUtil implements Serializable {
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }
 
-
-
+    public String getReferenceFromToken(String token) throws ValidationException {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+            String reference = claims.get("userReference").toString();
+            // Signature is valid
+            return reference;
+        } catch (Exception e) {
+            throw  new ValidationException("JWT validation error");
+        }
+    }
 }

@@ -39,7 +39,6 @@ build
 .idea
 /gradle
 
-gradlew
 gradlew.bat
 /build/
 .env
