@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class LogToRender {
     private String qrId;
-    private User lessor;
+    private UserToRender lessor;
 
-    private User tenant;
+    private UserToRender tenant;
     private LocalDateTime createdAt;
 
-    public LogToRender(String qrId, User lessor, User tenant, LocalDateTime createdAt) {
+    public LogToRender(String qrId, UserToRender lessor, UserToRender tenant, LocalDateTime createdAt) {
         this.qrId = qrId;
         this.lessor = lessor;
         this.tenant = tenant;
@@ -24,19 +24,19 @@ public class LogToRender {
         this.qrId = qrId;
     }
 
-    public User getLessor() {
+    public UserToRender getLessor() {
         return lessor;
     }
 
-    public void setLessor(User lessor) {
+    public void setLessor(UserToRender lessor) {
         this.lessor = lessor;
     }
 
-    public User getTenant() {
+    public UserToRender getTenant() {
         return tenant;
     }
 
-    public void setTenant(User tenant) {
+    public void setTenant(UserToRender tenant) {
         this.tenant = tenant;
     }
 

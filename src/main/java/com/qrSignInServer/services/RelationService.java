@@ -56,7 +56,13 @@ public class RelationService {
                 listRelation.stream().map(relation -> {
                     User lessor = userRepository.findByIdAndTipo(relation.getLessor(), "lessor").orElse(null);
                     User tenant = userRepository.findByIdAndTipo(relation.getTenant(), "tenant").orElse(null);
-                    RelationToRender rtr = new RelationToRender(lessor, tenant);
+
+                    UserToRender lessorToRender =
+                            new UserToRender(lessor.getUsername(), lessor.getEmail(), lessor.getCreatedAt());
+                    UserToRender tenantToRender =
+                            new UserToRender(tenant.getUsername(), tenant.getEmail(), tenant.getCreatedAt());
+
+                    RelationToRender rtr = new RelationToRender(lessorToRender, tenantToRender);
                     return rtr;
                 }).collect(Collectors.toList());
 
@@ -69,7 +75,13 @@ public class RelationService {
                 listLogs.stream().map(log -> {
                     User lessor = userRepository.findByIdAndTipo(log.getLessor(), "lessor").orElse(null);
                     User tenant = userRepository.findByIdAndTipo(log.getTenant(), "tenant").orElse(null);
-                    LogToRender ltr = new LogToRender(log.getQrId(), lessor, tenant, log.getCreatedAt());
+
+                    UserToRender lessorToRender =
+                            new UserToRender(lessor.getUsername(), lessor.getEmail(), lessor.getCreatedAt());
+                    UserToRender tenantToRender =
+                            new UserToRender(tenant.getUsername(), tenant.getEmail(), tenant.getCreatedAt());
+
+                    LogToRender ltr = new LogToRender(log.getQrId(), lessorToRender, tenantToRender, log.getCreatedAt());
                     return ltr;
                 }).collect(Collectors.toList());
         return listLogsToRender;

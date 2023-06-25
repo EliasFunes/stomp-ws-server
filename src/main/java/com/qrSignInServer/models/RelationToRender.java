@@ -1,28 +1,28 @@
 package com.qrSignInServer.models;
 
 public class RelationToRender {
-    private User lessor;
+    private UserToRender lessor;
 
-    private User tenant;
+    private UserToRender tenant;
 
-    public RelationToRender(User lessor, User tenant) {
+    public RelationToRender(UserToRender lessor, UserToRender tenant) {
         this.lessor = lessor;
         this.tenant = tenant;
     }
 
-    public User getLessor() {
+    public UserToRender getLessor() {
         return lessor;
     }
 
-    public void setLessor(User lessor) {
+    public void setLessor(UserToRender lessor) {
         this.lessor = lessor;
     }
 
-    public User getTenant() {
+    public UserToRender getTenant() {
         return tenant;
     }
 
-    public void setTenant(User tenant) {
+    public void setTenant(UserToRender tenant) {
         this.tenant = tenant;
     }
 }
