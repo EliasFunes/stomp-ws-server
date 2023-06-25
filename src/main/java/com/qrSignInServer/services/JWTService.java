@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,7 @@ public class JWTService {
 
         JWT jwt = new JWT();
         jwt.setToken(jwtparam);
+        jwt.setCreatedAt(LocalDateTime.now());
 
         Long id = jwtRepository.save(jwt).getId();
         return jwtRepository.findById(id);

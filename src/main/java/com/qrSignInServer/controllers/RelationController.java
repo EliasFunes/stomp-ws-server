@@ -2,7 +2,9 @@ package com.qrSignInServer.controllers;
 
 import com.qrSignInServer.config.security.JwtTokenUtil;
 import com.qrSignInServer.dto.RelationRequest;
+import com.qrSignInServer.models.LogToRender;
 import com.qrSignInServer.models.Relation;
+import com.qrSignInServer.models.RelationToRender;
 import com.qrSignInServer.services.RelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -50,6 +53,27 @@ public class RelationController {
         relation.setReference(relationRequest.getReference());
 
         return relationService.create(relation);
+    }
+
+
+    @GetMapping(value = "getAllByUser")
+    public @ResponseBody List<RelationToRender> allRelationByUser(
+            @RequestHeader HttpHeaders headers
+    ) throws ValidationException {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        String token = bearerToken.split(" ")[1];
+        final Long userId = jwtTokenUtil.getUserIdFromToken(token);
+        return relationService.findByUserId(userId);
+    }
+
+    @GetMapping(value = "getAllLogByUserId")
+    public @ResponseBody List<LogToRender> allLogByUser(
+            @RequestHeader HttpHeaders headers
+    ) throws ValidationException {
+        String bearerToken = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        String token = bearerToken.split(" ")[1];
+        final Long userId = jwtTokenUtil.getUserIdFromToken(token);
+        return relationService.findLogReadQRByUserId(userId);
     }
 
 }

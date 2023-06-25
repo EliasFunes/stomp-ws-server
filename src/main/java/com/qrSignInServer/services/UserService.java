@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,7 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setTipo(tipo);
+        user.setCreatedAt(LocalDateTime.now());
 
         Long id = userRepository.save(user).getId();
         return userRepository.findById(id);

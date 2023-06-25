@@ -1,9 +1,11 @@
 package com.qrSignInServer.controllers;
 
 import com.qrSignInServer.config.security.JwtTokenUtil;
+import com.qrSignInServer.models.LogReadEventQRCode;
 import com.qrSignInServer.models.Relation;
 import com.qrSignInServer.models.TenantQR;
 import com.qrSignInServer.models.WSPayload;
+import com.qrSignInServer.repositories.LogReadEventQRCodeRepository;
 import com.qrSignInServer.repositories.RelationRepository;
 import com.qrSignInServer.repositories.TenantQRRepository;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -44,6 +47,9 @@ public class WSController {
 
     @Autowired
     RelationRepository relationRepository;
+
+    @Autowired
+    LogReadEventQRCodeRepository logReadEventQRCodeRepository;
 
     Logger logger = LoggerFactory.getLogger(WSController.class);
 
@@ -67,6 +73,13 @@ public class WSController {
         }
 
         Long tenantID = tenantQR.get().getTenant();
+
+        LogReadEventQRCode logToSave =  new LogReadEventQRCode();
+        logToSave.setLessor(lessorId);
+        logToSave.setTenant(tenantID);
+        logToSave.setQrId(qrId);
+        logToSave.setCreatedAt(LocalDateTime.now());
+        logReadEventQRCodeRepository.save(logToSave);
 
         Optional<Relation> relation = relationRepository.findByTenantAndLessor(tenantID, lessorId);
         if(relation.isEmpty()){
