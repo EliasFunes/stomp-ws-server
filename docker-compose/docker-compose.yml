@@ -1,0 +1,32 @@
+version: '3'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres-db
+    restart: always
+    env_file:
+      db.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app-server:
+    image: eliasfunes/qrloginserver:latest
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    env_file:
+      server.env
+
+  app-demo:
+    image: eliasfunes/qrlogindemo:latest
+    restart: always
+    ports:
+      - 9000:9000
+    env_file:
+      demo.env
+
+volumes:
+  db_data:
